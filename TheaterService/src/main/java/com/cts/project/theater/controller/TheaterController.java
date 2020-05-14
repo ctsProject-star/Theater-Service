@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,15 +47,14 @@ public class TheaterController
 			            // You many decide to return HttpStatus.NOT_FOUND
 			        }
 		        }
-		        catch(RuntimeException e) 
+		        catch(Exception e) 
 				 { 
-					logger.error("RunTimeException is thrown... ");
+					logger.error("RunTimeException is thrown... ",e);
 					throw new RuntimeException(e);
 				 }
 		        
 		        return new ResponseEntity<List<Theater>>(theater, HttpStatus.OK);
-		  }
-		 
+		  } 
 		 
 		 @SuppressWarnings({ "unchecked", "rawtypes" })
 		 @RequestMapping(value = "/{theaterId}", method = RequestMethod.GET)
@@ -69,13 +69,13 @@ public class TheaterController
 				  if (theater == null)
 				  {
 					  logger.error("Theater with id {} not found.", theaterId);
-					  return new ResponseEntity(new CustomErrorType("Unable to find Theater with id: " 
-					                            +  theaterId + " ,does not exist."),HttpStatus.NOT_FOUND);
+					  return new ResponseEntity(new CustomErrorType("404","Unable to find Theater with id: " 
+					                            +  theaterId + ", does not exist."),HttpStatus.NOT_FOUND);
 				  }
 			   }
-			   catch(RuntimeException e) 
+			   catch(Exception e) 
 			   { 
-				 logger.error("RunTimeException is thrown... ");
+				 logger.error("RunTimeException is thrown... ",e);
 				 throw new RuntimeException(e);
 			   }
 		
@@ -93,13 +93,13 @@ public class TheaterController
 	    		 if (theaterRepository.existsTheaterBytCode(theater.gettCode() )) 
 		    	 {
 		             logger.error("Unable to create Theater with code {} , already exist!", theater.gettCode());
-		             return new ResponseEntity(new CustomErrorType("Unable to create Theater with code " 
-		                                       +  theater.gettCode() + " already exist."),HttpStatus.CONFLICT);
+		             return new ResponseEntity(new CustomErrorType("409","Unable to create Theater with code " 
+		                                       +  theater.gettCode() + ", already exist."),HttpStatus.CONFLICT);
 		         }
 	    	  }
-	    	  catch(RuntimeException e)
+	    	  catch(Exception e)
 	    	  {
-	    		 logger.error("RunTimeException is thrown... ");
+	    		 logger.error("RunTimeException is thrown... ",e);
 				 throw new RuntimeException(e);
 	    	  }
 	         
@@ -124,15 +124,15 @@ public class TheaterController
 		    		 if (theater == null)
 					 {
 						 logger.error("Theater with id {} not found.", theaterId);
-						 return new ResponseEntity(new CustomErrorType("Unable to find Theater with id: " +  theaterId + " ,does not exist."),HttpStatus.NOT_FOUND);
+						 return new ResponseEntity(new CustomErrorType("404","Unable to find Theater with id: " +  theaterId + ", does not exist."),HttpStatus.NOT_FOUND);
 					 }
 	
 		    		 theater.settName(theaterRequest.gettName());
 		    		
 		    	}
-		    	catch(RuntimeException e)
+		    	catch(Exception e)
 		    	{
-		    		logger.error("RunTimeException is thrown... ");
+		    		logger.error("RunTimeException is thrown... ",e);
 					throw new RuntimeException(e);
 		    	}
 
